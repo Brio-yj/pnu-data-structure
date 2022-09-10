@@ -1,0 +1,116 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
+int find_it (int x, vector<int> &a);
+pair<int,int> re_mm(vector<int> &v);
+
+int main() {
+
+    vector<pair<int,int>> z_re = {};
+
+    string line;
+    ifstream myfile("zsignal.txt");
+    int i = 0;
+    int x,y;
+
+    if (myfile.is_open()) {
+        getline(myfile,line);
+        x = stoi(line);
+        z_re.emplace_back(make_pair(0,x));
+
+        while (getline(myfile,line)){
+
+            if (line.front() == '0'){
+                line.erase(0,1);
+                y = stoi(line);
+                i += y;
+            }
+            else {
+                i++;
+                y = stoi(line);
+                x += y;
+                z_re.emplace_back(make_pair(i, x));
+            }
+        }
+
+        if (z_re.back().first != i) {
+            z_re.emplace_back(make_pair(i, x));
+        }
+
+        myfile.close();
+    } else cout<<"zsignal.txt을 열 수 없네요.";
+
+
+    int LOF = z_re.back().first;
+
+    vector<int> full_st(LOF+1);
+    auto z_iter = z_re.begin();
+    int prev = 0;
+
+    auto full_iter = full_st.begin();
+    *full_iter = (*z_iter).second;
+
+    for(auto &w:full_st){
+        if (prev != (*z_iter).first){
+            w = (*(z_iter-1)).second;
+        }
+        else {
+            w = (*z_iter).second;
+            z_iter++;
+        }
+        prev++;
+    }
+
+
+    pair<int,int> k;
+
+    char cmd;
+    while(cin>>cmd){
+
+        if (cmd == 'T'){
+            int search_i;
+            cin>>search_i;
+            int result = find_it(search_i,full_st);
+            cout<<result<<endl;
+        }
+
+        else if (cmd == 'M'){
+            int min_r,max_r;
+            cin>>min_r>>max_r;
+
+
+            if ((min_r<max_r)&&(min_r < full_st.size())&&(max_r < full_st.size())){
+                vector<int> final_array(max_r-min_r+1);
+                copy_n(full_st.begin()+min_r,max_r-min_r+1,final_array.begin());
+                k = re_mm(final_array);
+                cout<<k.first<<" "<<k.second<<endl;
+            }
+            else{
+                cout<<-1<<endl;
+            }
+        }
+        else break;
+
+    }
+    return 0;
+}
+
+
+int find_it (int x, vector<int> &a) {
+    if (a.size()<=x) return -1;
+    else {
+        auto r = a.begin() + x;
+        return *r;
+    }
+}
+
+
+pair<int,int> re_mm(vector<int> &v){
+    auto Min_i = min_element(v.begin(),v.end());
+    auto Max_i = max_element(v.begin(),v.end());
+    return {*Min_i,*Max_i};
+}
