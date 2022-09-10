@@ -1,0 +1,85 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+#include <iterator>
+#include <bits/stdc++.h>
+
+
+using namespace std;
+
+int InAndOut(int in_x, int in_y,int x, int y, int z){
+    if ((in_x < x) && (in_y < y)) return 1;
+    else if ((in_x == x) && (in_y < z)) return 1;
+    else if ((in_y == y) && (in_x <= x)) return 2;
+    else if ((in_x == x) && ((in_y >= z)&&(in_y <= y))) return 2;
+    else return 3;
+}
+
+int main()
+{
+
+    int x,y = 1;
+
+    vector <int> stair={};
+    vector <int> stair_odd={};
+
+    while (1){
+
+        if (x != 0){
+
+            cin>>x;
+
+            if (x != 0){
+                cin>>y;
+                stair.push_back(x);
+                stair_odd.push_back(y);
+            }
+        }
+
+        else{
+            break;
+        }
+    }
+
+
+    int height, verticle;
+    verticle = accumulate(stair.begin(), stair.end(),0);
+    height = accumulate(stair_odd.begin(), stair_odd.end(),0);
+
+    vector<int> sum_stair(stair.size());
+    partial_sum(stair.begin(),stair.end(),sum_stair.begin());
+
+
+    vector<int> rsum_stair(stair_odd.size());
+    partial_sum(stair_odd.rbegin(),stair_odd.rend(),rsum_stair.rbegin());
+
+
+    int stSum[sum_stair.size()+1] = {};
+    copy(sum_stair.begin(),sum_stair.end(), stSum);
+    int rstSum[rsum_stair.size()+1] = {};
+    copy(rsum_stair.begin(),rsum_stair.end(),rstSum);
+
+    while (cin>>x>>y){
+        int k;
+        for (int i = 0; i < sum_stair.size();i++){
+            k = InAndOut(x,y, stSum[i],rstSum[i],rstSum[i+1]);
+            if (k == 3) continue;
+            else{
+                if (k == 1) {
+                    cout<<"in"<<endl;
+                    break;}
+                else {
+                    cout<<"on"<<endl;
+                    break;}
+            }
+        }
+
+        if (k == 3) cout<<"out"<<endl;
+    }
+
+
+    return 0;
+}
+
+
