@@ -40,6 +40,8 @@ int main()
     for(int i=0;i<pv.size();i++)
         cout<<pv[i].x<<"\t"<<pv[i].y<<"\n";
 
+    cout<<" solution"<<"\n";
+
     for(int i=0;i<pv.size()-1;i++){
         if(pv[i].y==pv[i+1].y){
             pv[i].x+=pv[i+1].x;
@@ -49,6 +51,9 @@ int main()
             }
         i--;
         }
+        else if( (pv[i].y!=pv[i+1].y) && (pv[i].x==0) ){
+            pv.erase(pv.begin() + i);
+        }
         if(pv.size()==0){
             cout<<"0"<<" "<<"0";
             break;
@@ -56,8 +61,9 @@ int main()
         else if(i==pv.size()-2){
             cout<<pv.size()<<"\n";
             for(int i=0;i<pv.size();i++){
-                cout<<pv[i].x<<"\t"<<pv[i].y<<"\n";
-                }
+                if(pv[i].x==0) continue;
+                else cout<<pv[i].x<<"\t"<<pv[i].y<<"\n";
+            }
         }
     }
 
